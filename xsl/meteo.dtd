@@ -1,0 +1,10 @@
+<!ELEMENT meteo (ville, date, previsions)>
+<!ELEMENT ville (#PCDATA)>
+<!ELEMENT date (#PCDATA)>
+<!ELEMENT previsions (prevision+)>
+<!ELEMENT prevision (heure, temperature, description, vent, humidite)>
+<!ELEMENT heure (#PCDATA)>
+<!ELEMENT temperature (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT vent (#PCDATA)>
+<!ELEMENT humidite (#PCDATA)>
