@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Circulations – Interop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="css/circulations.css">
+</head>
+
+<body>
+<header>
+    <h1>🚲 Circulations – Décider d’utiliser un vélo partagé</h1>
+</header>
+
+<main>
+    <section id="infos" class="infos-grid">
+        <div id="meteo">Météo : --</div>
+        <div id="air">Qualité de l’air : --</div>
+    </section>
+
+    <section id="map" style="height: 500px; margin-top: 20px;"></section>
+
+    <section id="sources">
+        <h2>Sources des données</h2>
+        <ul>
+            <li><a href="http://ip-api.com/json/" target="_blank">Géolocalisation IP – ip-api.com</a></li>
+            <li><a href="https://transport.data.gouv.fr/datasets/stations-velostanlib" target="_blank">
+                VélOstan’lib – transport.data.gouv.fr</a></li>
+            <li><a href="https://www.data.gouv.fr/fr/datasets/indice-de-la-qualite-de-lair-quotidien-par-commune-indice-atmo/"
+                   target="_blank">Indice ATMO – data.gouv.fr</a></li>
+            <li><a href="https://www.infoclimat.fr/" target="_blank">Infoclimat – météo</a></li>
+            <b>Dépôt Git :</b> <a href="https://github.com/AudinotNoah/Interop">https://github.com/AudinotNoah/Interop</a>
+        </ul>
+    </section>
+</main>
+
+<footer>
+    <p>DWM – Interopérabilité – TD Circulations</p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script> 
+<script src="js/circulations.js"></script>
+</body>
+</html>

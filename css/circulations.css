@@ -1,0 +1,46 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+}
+
+header, footer {
+    background: #222;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+#infos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+}
+
+#infos div {
+    padding: 0.5rem 1rem;
+    border-left: 4px solid #3498db;
+}
+
+#map {
+    height: 70vh;
+    margin: 1rem;
+    border: 2px solid #ccc;
+}
+
+#sources {
+    padding: 1rem;
+    background: white;
+}
+
+#sources ul {
+    padding-left: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    #map {
+        height: 50vh;
+    }
+}
