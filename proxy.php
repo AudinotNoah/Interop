@@ -11,7 +11,6 @@ if (!isset($_GET['url'])) {
 
 $url = $_GET['url'];
 
-// Vérifier domaine autorisé
 $isAllowed = false;
 foreach ($allowed_domains as $domain) {
     if (strpos($url, $domain) !== false) {
@@ -26,7 +25,6 @@ if (!$isAllowed) {
     exit;
 }
 
-// Utiliser la fonction centralisée
 $data = chargerDonnees($url);
 
 if ($data === false) {
@@ -35,7 +33,6 @@ if ($data === false) {
     exit;
 }
 
-// Détecter le type de contenu
 if (strpos($url, '.json') !== false || strpos($url, 'json') !== false) {
     header("Content-Type: application/json; charset=utf-8");
 } elseif (strpos($url, '.xml') !== false || strpos($url, 'xml') !== false) {

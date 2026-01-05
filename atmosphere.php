@@ -64,7 +64,12 @@ $air_indice = "-";
 $air_qualif = "Non dispo";
 $air_color = "#95a5a6";
 $air_source = "Data.gouv (ATMO)";
-$cache_air = 'cache/air_quality.csv';
+$cache_dir = 'cache';
+$cache_air = $cache_dir . '/air_quality.csv';
+
+if (!is_dir($cache_dir)) {
+    mkdir($cache_dir, 0755, true);
+}
 
 if (!file_exists($cache_air) || (time() - filemtime($cache_air) > 3600)) {
     $url_dataset = "https://www.data.gouv.fr/api/1/datasets/indice-de-la-qualite-de-lair-quotidien-par-commune-indice-atmo/";

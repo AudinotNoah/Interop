@@ -1,16 +1,10 @@
 <?php
-// ============================================
-// Configuration globale - Interop
-// ============================================
 
-// Proxy webetu (mettre true sur webetu)
 $use_proxy = false;
 
-// Adresses proxy (2 formats nécessaires)
-$proxy_stream = 'tcp://www-cache:3128';  // Pour file_get_contents
-$proxy_curl = 'www-cache:3128';          // Pour cURL
+$proxy_stream = 'tcp://www-cache:3128';
+$proxy_curl = 'www-cache:3128';
 
-// Domaines autorisés pour proxy.php (CORS)
 $allowed_domains = [
     'ip-api.com',
     'api.cyclocity.fr',
@@ -20,7 +14,6 @@ $allowed_domains = [
     'carto.g-ny.org'
 ];
 
-// Contexte HTTP avec proxy (pour file_get_contents)
 $opts = [
     'http' => [
         'timeout' => 15,
@@ -40,7 +33,6 @@ if ($use_proxy) {
 
 $context = stream_context_create($opts);
 
-// Fonction pour charger des données (cURL ou file_get_contents)
 function chargerDonnees($url) {
     global $use_proxy, $proxy_curl, $context;
     
