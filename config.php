@@ -5,7 +5,10 @@
 
 // Proxy webetu (mettre true sur webetu)
 $use_proxy = false;
-$proxy_address = 'tcp://wwwcache.univ-lorraine.fr:3128';
+
+// Adresses proxy (2 formats nécessaires)
+$proxy_stream = 'tcp://www-cache:3128';  // Pour file_get_contents
+$proxy_curl = 'www-cache:3128';          // Pour cURL
 
 // Domaines autorisés pour proxy.php (CORS)
 $allowed_domains = [
@@ -20,7 +23,7 @@ $allowed_domains = [
 // Contexte HTTP avec proxy (pour file_get_contents)
 $opts = [
     'http' => [
-        'timeout' => 10,
+        'timeout' => 15,
         'ignore_errors' => true,
         'header' => "User-Agent: EtudiantIUT/1.0\r\n"
     ],
@@ -31,7 +34,7 @@ $opts = [
 ];
 
 if ($use_proxy) {
-    $opts['http']['proxy'] = $proxy_address;
+    $opts['http']['proxy'] = $proxy_stream;
     $opts['http']['request_fulluri'] = true;
 }
 
@@ -39,7 +42,7 @@ $context = stream_context_create($opts);
 
 // Fonction pour charger des données (cURL ou file_get_contents)
 function chargerDonnees($url) {
-    global $use_proxy, $proxy_address, $context;
+    global $use_proxy, $proxy_curl, $context;
     
     if (function_exists('curl_init')) {
         $ch = curl_init();
@@ -49,10 +52,10 @@ function chargerDonnees($url) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'proxy iut');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'iut');
         
         if ($use_proxy) {
-            curl_setopt($ch, CURLOPT_PROXY, $proxy_address);
+            curl_setopt($ch, CURLOPT_PROXY, $proxy_curl);
         }
         
         $res = curl_exec($ch);
