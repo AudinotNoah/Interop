@@ -4,41 +4,58 @@
     <meta charset="utf-8">
     <title>Circulations – Interop</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="css/circulations.css">
 </head>
-
 <body>
-<header>
-    <h1>🚲 Circulations – Décider d’utiliser un vélo partagé</h1>
-</header>
 
-<main>
-    <section id="infos" class="infos-grid">
-        <div id="meteo">Météo : --</div>
-        <div id="air">Qualité de l’air : --</div>
+<div class="container">
+    <header>
+        <h1>🚲 Circulations</h1>
+        <div class="info-loc">Décider d'utiliser un vélo partagé à Nancy</div>
+    </header>
+
+    <section id="decision" class="decision-box">
+        <span id="decision-text">Analyse en cours...</span>
     </section>
 
-    <section id="map" style="height: 500px; margin-top: 20px;"></section>
+    <div class="grid infos-grid">
+        <div id="meteo" class="card info-card">
+            <div class="info-title">☀️ Météo</div>
+            <div class="info-content"><span class="loading">Chargement...</span></div>
+        </div>
+        <div id="air" class="card info-card">
+            <div class="info-title">💨 Qualité de l'air</div>
+            <div class="info-content"><span class="loading">Chargement...</span></div>
+        </div>
+    </div>
 
-    <section id="sources">
-        <h2>Sources des données</h2>
+    <div class="section-title">Stations VélOstan'lib</div>
+    <div id="map-container">
+        <div id="map"></div>
+        <div class="legend">
+            <span class="legend-item"><span class="marker-green">●</span> Vélos dispo (5+)</span>
+            <span class="legend-item"><span class="marker-orange">●</span> Peu de vélos (1-4)</span>
+            <span class="legend-item"><span class="marker-red">●</span> Aucun vélo</span>
+            <span class="legend-item"><span class="marker-blue">●</span> Votre position</span>
+        </div>
+    </div>
+
+    <div id="sources">
+        <h2>Sources des données (URLs des APIs)</h2>
         <ul>
-            <li><a href="http://ip-api.com/json/" target="_blank">Géolocalisation IP – ip-api.com</a></li>
-            <li><a href="https://transport.data.gouv.fr/datasets/stations-velostanlib" target="_blank">
-                VélOstan’lib – transport.data.gouv.fr</a></li>
-            <li><a href="https://www.data.gouv.fr/fr/datasets/indice-de-la-qualite-de-lair-quotidien-par-commune-indice-atmo/"
-                   target="_blank">Indice ATMO – data.gouv.fr</a></li>
-            <li><a href="https://www.infoclimat.fr/" target="_blank">Infoclimat – météo</a></li>
-            <b>Dépôt Git :</b> <a href="https://github.com/AudinotNoah/Interop">https://github.com/AudinotNoah/Interop</a>
+            <li>Géolocalisation IP : <a href="http://ip-api.com/json/" target="_blank">http://ip-api.com/json/</a></li>
+            <li>VélOstan'lib : <a href="https://api.cyclocity.fr/contracts/nancy/gbfs/gbfs.json" target="_blank">https://api.cyclocity.fr/contracts/nancy/gbfs/gbfs.json</a></li>
+            <li>Qualité de l'air : <a href="https://www.data.gouv.fr/api/1/datasets/indice-de-la-qualite-de-lair-quotidien-par-commune-indice-atmo/" target="_blank">https://www.data.gouv.fr/api/1/datasets/indice-de-la-qualite-de-lair-quotidien-par-commune-indice-atmo/</a></li>
+            <li>Météo : <a href="http://www.infoclimat.fr/public-api/gfs/xml" target="_blank">http://www.infoclimat.fr/public-api/gfs/xml?_ll={lat},{lon}</a></li>
         </ul>
-    </section>
-</main>
+        <p><b>Dépôt Git :</b> <a href="https://github.com/AudinotNoah/Interop">https://github.com/AudinotNoah/Interop</a></p>
+    </div>
 
-<footer>
-    <p>DWM – Interopérabilité – TD Circulations</p>
-</footer>
+    <footer>
+        DWM – Interopérabilité – TP Circulations
+    </footer>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script> 
 <script src="js/circulations.js"></script>

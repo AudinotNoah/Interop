@@ -1,0 +1,64 @@
+<?php
+// ============================================
+// Configuration globale - Interop
+// ============================================
+
+// Proxy webetu (mettre true sur webetu)
+$use_proxy = false;
+$proxy_address = 'tcp://wwwcache.univ-lorraine.fr:3128';
+
+// Domaines autorisés pour proxy.php (CORS)
+$allowed_domains = [
+    'ip-api.com',
+    'api.cyclocity.fr',
+    'data.gouv.fr',
+    'infoclimat.fr',
+    'opendatasoft.com',
+    'carto.g-ny.org'
+];
+
+// Contexte HTTP avec proxy (pour file_get_contents)
+$opts = [
+    'http' => [
+        'timeout' => 10,
+        'ignore_errors' => true,
+        'header' => "User-Agent: EtudiantIUT/1.0\r\n"
+    ],
+    'ssl' => [
+        'verify_peer' => false,
+        'verify_peer_name' => false
+    ]
+];
+
+if ($use_proxy) {
+    $opts['http']['proxy'] = $proxy_address;
+    $opts['http']['request_fulluri'] = true;
+}
+
+$context = stream_context_create($opts);
+
+// Fonction pour charger des données (cURL ou file_get_contents)
+function chargerDonnees($url) {
+    global $use_proxy, $proxy_address, $context;
+    
+    if (function_exists('curl_init')) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'proxy iut');
+        
+        if ($use_proxy) {
+            curl_setopt($ch, CURLOPT_PROXY, $proxy_address);
+        }
+        
+        $res = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        return ($res !== false && $http_code === 200) ? $res : false;
+    } else {
+        return @file_get_contents($url, false, $context);
+    }
+}

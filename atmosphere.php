@@ -1,42 +1,5 @@
 <?php
-$use_proxy = false; 
-$proxy_address = 'tcp://wwwcache.univ-lorraine.fr:3128'; 
-
-$opts = [
-    'http' => [
-        'timeout' => 10,
-        'ignore_errors' => true,
-        'header' => "User-Agent: EtudiantIUT/1.0\r\n"
-    ],
-    'ssl' => [
-        'verify_peer' => false,
-        'verify_peer_name' => false
-    ]
-];
-
-if ($use_proxy) {
-    $opts['http']['proxy'] = $proxy_address;
-    $opts['http']['request_fulluri'] = true;
-}
-$context = stream_context_create($opts);
-
-function chargerDonnees($url, $context) {
-    if (function_exists('curl_init')) {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'EtudiantIUT/1.0');
-        $res = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        return ($res !== false && $http_code === 200) ? $res : false;
-    } else {
-        return @file_get_contents($url, false, $context);
-    }
-}
+require_once 'config.php';
 
 $ip = $_SERVER['REMOTE_ADDR'];
 $lat = null;
@@ -48,7 +11,7 @@ $source_geo = "IP";
 if ($ip == '127.0.0.1' || $ip == '::1') {
     $ville_ip = "Localhost";
 } else {
-    $json_geo = chargerDonnees("http://ip-api.com/json/" . $ip, $context);
+    $json_geo = chargerDonnees("http://ip-api.com/json/" . $ip);
     $geo_data = json_decode($json_geo, true);
     if ($geo_data && $geo_data['status'] == 'success') {
         $lat = $geo_data['lat'];
@@ -64,7 +27,7 @@ if (stripos($ville_ip, 'Nancy') !== false && $lat !== null && $lon !== null) {
     $ville = $ville_ip;
 } else {
     $url_iut = "https://api-adresse.data.gouv.fr/search/?q=2+Boulevard+Charlemagne+54000+Nancy&limit=1";
-    $json_iut = chargerDonnees($url_iut, $context);
+    $json_iut = chargerDonnees($url_iut);
     $data_iut = json_decode($json_iut, true);
     
     if ($data_iut && isset($data_iut['features'][0]['geometry']['coordinates'])) {
@@ -88,7 +51,7 @@ if (stripos($ville_ip, 'Nancy') !== false && $lat !== null && $lon !== null) {
 $iut_lat = null;
 $iut_lon = null;
 $iut_url = "https://api-adresse.data.gouv.fr/search/?q=2+Boulevard+Charlemagne+54000+Nancy&limit=1";
-$json_iut_poi = chargerDonnees($iut_url, $context);
+$json_iut_poi = chargerDonnees($iut_url);
 if ($json_iut_poi) {
     $data_iut_poi = json_decode($json_iut_poi, true);
     if ($data_iut_poi && isset($data_iut_poi['features'][0]['geometry']['coordinates'])) {
@@ -105,7 +68,7 @@ $cache_air = 'cache/air_quality.csv';
 
 if (!file_exists($cache_air) || (time() - filemtime($cache_air) > 3600)) {
     $url_dataset = "https://www.data.gouv.fr/api/1/datasets/indice-de-la-qualite-de-lair-quotidien-par-commune-indice-atmo/";
-    $json_dataset = chargerDonnees($url_dataset, $context);
+    $json_dataset = chargerDonnees($url_dataset);
     
     if ($json_dataset) {
         $dataset = json_decode($json_dataset, true);
@@ -114,7 +77,7 @@ if (!file_exists($cache_air) || (time() - filemtime($cache_air) > 3600)) {
                 if (isset($resource['format']) && strtolower($resource['format']) == 'csv') {
                     $csv_url_air = $resource['latest'] ?? $resource['url'] ?? null;
                     if ($csv_url_air) {
-                        $csv_air = chargerDonnees($csv_url_air, $context);
+                        $csv_air = chargerDonnees($csv_url_air);
                         if ($csv_air && strlen($csv_air) > 1000) {
                             file_put_contents($cache_air, $csv_air);
                         }
@@ -168,7 +131,7 @@ $covid_dates = [];
 $covid_values = [];
 $covid_last_date = '';
 $csv_url = 'https://www.data.gouv.fr/fr/datasets/r/2963ccb5-344d-4978-bdd3-08aaf9efe514'; 
-$csv_content = chargerDonnees($csv_url, $context);
+$csv_content = chargerDonnees($csv_url);
 
 if ($csv_content) {
     $lines = explode("\n", $csv_content);
@@ -221,7 +184,7 @@ if ($csv_content) {
 
 $trafic_geojson = null;
 $waze_url = 'https://carto.g-ny.org/data/cifs/cifs_waze_v2.json';
-$waze_data = chargerDonnees($waze_url, $context);
+$waze_data = chargerDonnees($waze_url);
 
 if ($waze_data) {
     $waze_json = json_decode($waze_data, true);
@@ -296,7 +259,7 @@ if (file_exists('xsl/meteo.xsl') && $lat !== null && $lon !== null) {
     $auth_token = "VU9fSA9xBiRfcgA3VyEKI1Y%2BUmcJf1B3VioLaABlUi8GbVc2AmJWMF4wAH0ALwI0UH0EZw80CTkKYQd%2FWigDYlU%2FXzMPZAZhXzAAZVd4CiFWeFIzCSlQd1YzC24Ac1IyBmFXLQJlVjJeLwBgADMCPlB8BHsPMQk2Cm8HZ1ozA2VVN185D2kGZF8vAH1XYQo3VmBSOwk0UDlWMgtuAG9SOAZmVzoCM1Y2Xi8AYAAwAjRQZQRhDzYJMgprB39aKAMZVUVfJg8sBiZfZQAkV3oKa1Y7UmY%3D";
     $checksum = "d5d7113365a5a0c1f587c23f7a8a04b9";
     $url_meteo = "http://www.infoclimat.fr/public-api/gfs/xml?_ll=" . $lat . "," . $lon . "&_auth=" . $auth_token . "&_c=" . $checksum;
-    $xml_content = chargerDonnees($url_meteo, $context);
+    $xml_content = chargerDonnees($url_meteo);
     
     if ($xml_content && strpos(trim($xml_content), '<') === 0) {
         $xml = new DOMDocument();
